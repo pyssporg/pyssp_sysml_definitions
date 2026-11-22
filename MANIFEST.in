@@ -1,0 +1,4 @@
+include README.md
+include CHANGELOG.md
+include pyproject.toml
+recursive-include src/pyssp_sysml_definitions *.sysml
