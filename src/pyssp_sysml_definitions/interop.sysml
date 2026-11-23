@@ -5,11 +5,11 @@ package PyfmiInterop {
   private import ScalarValues::*;
   private import PysspCore::*;
 
-  // Interop identity and wire format metadata.  This is deliberately not
-  // FmuMetadata: fmu_meta is the reserved FMI implementation slot and must
-  // stay typed by FmuMetadata.
-  attribute def InteropMetadata {
-    attribute source : String;
+  // Interop identity and wire format metadata.  This is a family container,
+  // so it extends SourcedMetadata and inherits `source` instead of declaring
+  // it again.  It is deliberately not FmuMetadata: fmu_meta is the reserved
+  // FMI implementation slot and must stay typed by FmuMetadata.
+  attribute def InteropMetadata :> SourcedMetadata {
     attribute serialization : String;
     attribute version : String;
   }

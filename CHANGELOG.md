@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `InteropMetadata` now extends `SourcedMetadata` and inherits `source` instead
+  of declaring it again, so a build-metadata family container is recognized by
+  reaching the shared base rather than by name. `docs/roles.md` no longer
+  carves out a name-based exception for it.
 - Documented the three-role contract — build metadata, initialization
   configuration, runtime signal — as a short statement in `core.sysml` and a
   long-form `docs/roles.md` with rationale, a worked example, and anti-patterns;

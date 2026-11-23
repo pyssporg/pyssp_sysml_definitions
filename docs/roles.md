@@ -24,7 +24,7 @@ in its own format.
 
 | role | carrier | lifetime | becomes a connector or variable? |
 |---|---|---|---|
-| build metadata | typed attribute container: `FmuMetadata`, `SspMetadata`, `DefaultExperiment`/`Experiment`, and family containers such as `InteropMetadata` | the build | never |
+| build metadata | typed attribute container that reaches `SourcedMetadata` (`FmuMetadata`, `SspMetadata`, and family containers such as `InteropMetadata`), or an experiment container (`DefaultExperiment`/`Experiment`) | the build | never |
 | initialization configuration | parameter interface (`port def :> ParameterInterface`, used as `in port parameters : <PortDef>`) and parameter sets (`attribute def :> ParameterSet` applied with `bind`) | chosen before initialization; held for the run unless the artifact declares it tunable | yes, with the parameter role |
 | runtime signal | every other port | the run | yes, as input or output |
 
@@ -37,8 +37,9 @@ the information that propagates between artifacts after initialization.
 
 Recognition is by type:
 
-- an attribute whose `attribute def` reaches `FmuMetadata` or `SspMetadata` is
-  build metadata, as is an experiment container;
+- an attribute whose `attribute def` reaches `SourcedMetadata` — directly, or
+  through a family container — is build metadata, as is an experiment
+  container;
 - a `port def` that reaches `ParameterInterface` is an initialization
   interface;
 - an `attribute def` marked `:> ParameterSet` is a parameter set;
@@ -120,7 +121,7 @@ and never a wire field.
 
 - **Metadata as a plain attribute.** An untyped `attribute source = "..."` on a
   leaf is a flat parameter, and the parameter dialect rejects it. Type it with
-  a container that reaches `FmuMetadata` or `SspMetadata`.
+  a container that reaches `SourcedMetadata`.
 - **An interface port under another name.** `in port gains : GainParameters`
   where `GainParameters :> ParameterInterface` is an error. Use
   `in port parameters : GainParameters`.

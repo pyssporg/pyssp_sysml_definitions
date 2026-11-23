@@ -44,6 +44,41 @@ def test_include_roots_contains_the_core_then_the_interop_vocabulary() -> None:
     assert include_roots() == (core_definitions(), interop_definitions())
 
 
+def _definition_block(text: str, header: str) -> str:
+    """Return one definition, from its header through its closing brace."""
+
+    start = text.index(header)
+    depth = 0
+    for index in range(start, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1]
+    raise AssertionError(f"unbalanced definition: {header}")
+
+
+def test_a_family_metadata_container_extends_the_shared_base() -> None:
+    """Recognition is by supertype: InteropMetadata must not redeclare source."""
+
+    core_text = core_definitions().read_text(encoding="utf-8")
+    interop_text = interop_definitions().read_text(encoding="utf-8")
+
+    interop = _definition_block(interop_text, "attribute def InteropMetadata")
+    sourced = _definition_block(core_text, "attribute def SourcedMetadata")
+
+    assert interop.splitlines()[0].strip() == (
+        "attribute def InteropMetadata :> SourcedMetadata {"
+    )
+    assert "attribute source" not in interop
+    assert "attribute serialization : String;" in interop
+    assert "attribute version : String;" in interop
+    assert "attribute source : String;" in sourced
+    for family in ("FmuMetadata", "SspMetadata"):
+        assert f"attribute def {family} :> SourcedMetadata" in core_text
+
+
 def test_the_public_surface_is_path_helpers_only() -> None:
     """Export selection is composition policy, not vocabulary."""
 

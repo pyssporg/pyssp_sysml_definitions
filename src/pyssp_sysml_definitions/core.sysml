@@ -17,7 +17,8 @@ package PysspCore {
   // Rationale, examples, and anti-patterns: docs/roles.md.
 
   // Build-metadata role: shared base for containers that name an external
-  // artifact.
+  // artifact.  Family containers extend it, so any build-metadata container
+  // is recognizable by reaching SourcedMetadata.
   attribute def SourcedMetadata {
     attribute source : String;
   }
