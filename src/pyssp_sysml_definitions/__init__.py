@@ -8,10 +8,8 @@ without pulling a dialect, an IR, or a parser into its dependency set.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
 from importlib import resources
 from pathlib import Path
-from typing import Any
 
 __version__ = "0.1.0"
 
@@ -21,7 +19,6 @@ __all__ = [
     "core_definitions",
     "include_roots",
     "interop_definitions",
-    "load_with_interop",
 ]
 
 #: Name of the shared core vocabulary inside the package.
@@ -72,36 +69,9 @@ def include_roots() -> tuple[Path, Path]:
     """Return both vocabulary roots, core first and interop second.
 
     This is the whole vocabulary, offered for a caller that wants every
-    definition available. It is not what :func:`load_with_interop` does: that
-    helper adds the interop root only when the model imports it, because an
-    unconditional root can change which composition an exporter selects.
+    definition available. A composition layer decides whether an
+    unconditional root would change which export unit its loader selects.
     """
 
     return (core_definitions(), interop_definitions())
 
-
-def load_with_interop(
-    source: Any, load: Any, includes: Iterable[str | Path] = ()
-) -> Any:
-    """Load ``source`` plus caller roots, adding the library only when imported.
-
-    ``includes`` are extra package roots the caller supplies (a library a model
-    imports); they are passed to every load call so the first parse resolves
-    those imports.  The bundled vocabulary is an include root, not a definition
-    every model inherits.  ``pyfmi_interfaces`` selects an export unit by
-    ``:> FmuModel``, so including the library in an architecture that never
-    imports it would expose ``FmuInterop`` as a candidate and change that
-    model's composition.  The model declares ``PyfmiInterop`` in its imports
-    only when it wants the shared types, so the include is conditional on that
-    declaration; an imported package root can make that declaration visible
-    too, so the check runs after the caller's roots are loaded.
-
-    ``load`` is injected by the caller, so this package keeps no parser
-    dependency.
-    """
-
-    roots = tuple(includes)
-    architecture = load(source, *roots)
-    if "PyfmiInterop" not in getattr(architecture, "imports", {}):
-        return architecture
-    return load(source, *roots, interop_definitions())

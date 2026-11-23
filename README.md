@@ -25,10 +25,11 @@ architecture = load(model, core_definitions())
 - `CORE_FILE` / `INTEROP_FILE` — the package-data file names;
 - `core_definitions()` / `interop_definitions()` — real file paths, refusing a
   zipped install;
-- `include_roots()` — both roots, core first;
-- `load_with_interop(source, load, includes=())` — loads the source and adds the
-  interop root only when the architecture imports `PyfmiInterop`; `load` is
-  injected so this package stays dependency-free.
+- `include_roots()` — both roots, core first.
+
+The package has no loader and no export-selection policy. A composition layer
+supplies its own loader and decides when to include a root; for FMI that is
+`pyfmi_sysml.load_with_interop`.
 
 ## Install
 

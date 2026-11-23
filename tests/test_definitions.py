@@ -1,24 +1,20 @@
-"""The shipped vocabulary: package data, packages, and conditional loading."""
+"""The shipped vocabulary: package data, packages, and path helpers."""
 
 from __future__ import annotations
 
+import ast
 from pathlib import Path
 
+import pyssp_sysml_definitions
 from pyssp_sysml_definitions import (
     CORE_FILE,
     INTEROP_FILE,
     core_definitions,
     include_roots,
     interop_definitions,
-    load_with_interop,
 )
 
-
-class _Architecture:
-    """The only part of a loaded architecture ``load_with_interop`` reads."""
-
-    def __init__(self, imports: dict[str, object]) -> None:
-        self.imports = imports
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_both_vocabulary_files_ship_as_package_data() -> None:
@@ -48,45 +44,42 @@ def test_include_roots_contains_the_core_then_the_interop_vocabulary() -> None:
     assert include_roots() == (core_definitions(), interop_definitions())
 
 
-def test_load_with_interop_skips_the_library_without_an_import() -> None:
-    calls: list[tuple[object, tuple[object, ...]]] = []
+def test_the_public_surface_is_path_helpers_only() -> None:
+    """Export selection is composition policy, not vocabulary."""
 
-    def load(source, *roots):
-        calls.append((source, roots))
-        return _Architecture({})
-
-    result = load_with_interop("model.sysml", load, includes=["lib"])
-
-    assert result.imports == {}
-    assert calls == [("model.sysml", ("lib",))]
-
-
-def test_load_with_interop_adds_the_library_when_imported() -> None:
-    calls: list[tuple[object, tuple[object, ...]]] = []
-
-    def load(source, *roots):
-        calls.append((source, roots))
-        return _Architecture({"PyfmiInterop": object()})
-
-    load_with_interop("model.sysml", load)
-
-    assert calls == [
-        ("model.sysml", ()),
-        ("model.sysml", (interop_definitions(),)),
-    ]
+    assert set(pyssp_sysml_definitions.__all__) == {
+        "CORE_FILE",
+        "INTEROP_FILE",
+        "core_definitions",
+        "include_roots",
+        "interop_definitions",
+    }
+    assert not hasattr(pyssp_sysml_definitions, "load_with_interop")
 
 
-def test_an_include_root_can_make_the_import_visible() -> None:
-    calls: list[tuple[object, tuple[object, ...]]] = []
+def test_the_module_imports_no_parser_or_artifact_family() -> None:
+    """The package stays dependency-free: no loader, no FMI or SSP import."""
 
-    def load(source, *roots):
-        calls.append((source, roots))
-        imports = {"PyfmiInterop": object()} if "lib" in roots else {}
-        return _Architecture(imports)
+    tree = ast.parse(
+        (ROOT / "src" / "pyssp_sysml_definitions" / "__init__.py").read_text(
+            encoding="utf-8"
+        )
+    )
+    imported: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imported.extend(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imported.append(node.module)
 
-    load_with_interop("model.sysml", load, includes=["lib"])
+    assert imported, "the module should import only the standard library"
+    allowed = {"__future__", "collections", "importlib", "pathlib", "typing"}
+    assert {name.split(".")[0] for name in imported} <= allowed, imported
 
-    assert calls == [
-        ("model.sysml", ("lib",)),
-        ("model.sysml", ("lib", interop_definitions())),
-    ]
+
+def test_the_vocabulary_files_are_declared_for_packaging() -> None:
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
+
+    assert 'pyssp_sysml_definitions = ["*.sysml"]' in pyproject
+    assert "recursive-include src/pyssp_sysml_definitions *.sysml" in manifest

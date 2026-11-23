@@ -17,8 +17,8 @@ dependencies; a consumer supplies its own loader.
 
 - `core_definitions()` and `interop_definitions()` return real file paths and
   refuse a zipped install; `include_roots()` returns both, core first.
-- `load_with_interop(source, load, includes=())` adds the interop root only when
-  the architecture imports `PyfmiInterop`; `load` is injected.
+- Export selection and conditional includes are composition policy: they live
+  in the consuming layer (for FMI, `pyfmi_sysml`), not here.
 - The version lives in `src/pyssp_sysml_definitions/__init__.py` only;
   `pyproject.toml` is dynamic.
 - `README.md` and `CHANGELOG.md` are the public record; the packaged `.sysml`
