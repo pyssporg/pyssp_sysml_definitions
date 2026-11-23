@@ -55,5 +55,6 @@ workspace source.
 
 - Python >= 3.11.
 - Install: `python3 -m venv venv && . venv/bin/activate && pip install -e ".[dev]"`.
-- Tests: `python -m pytest`; lint: `ruff check src tests`.
+- Tests: `python -m pytest`; lint: `ruff check src tests` (configuration in
+  `pyproject.toml` under `[tool.ruff]`).
 - Build: `python -m build --wheel --sdist`.

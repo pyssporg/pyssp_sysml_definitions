@@ -12,13 +12,18 @@ The package ships two ordinary SysML libraries as package data:
   port, and standalone FMU base. It imports `PysspCore::*`.
 
 It has no runtime dependencies and no parser. A consumer supplies its own
-loader:
+loader and hands it the resolved path:
 
 ```python
 from pyssp_sysml_definitions import core_definitions, interop_definitions
 
-architecture = load(model, core_definitions())
+core_path = core_definitions()
+interop_path = interop_definitions()
+print(core_path)     # .../pyssp_sysml_definitions/core.sysml
+print(interop_path)  # .../pyssp_sysml_definitions/interop.sysml
 ```
+
+The package resolves paths only; it does not load or compose the vocabulary.
 
 ## Roles
 
@@ -61,6 +66,24 @@ Requires Python 3.11 or newer.
 An artifact family keeps its own vocabulary in its own package and includes
 these files as roots. Do not edit a shipped `.sysml` file downstream: add a new
 library that imports the shared packages.
+
+## Development
+
+Install the development tools with the package:
+
+```bash
+pip install -e ".[dev]"
+```
+
+Run tests and lint from the repository root:
+
+```bash
+python -m pytest
+ruff check src tests
+```
+
+Ruff configuration lives in `pyproject.toml` (`[tool.ruff]`). Build the wheel
+and sdist with `python -m build --wheel --sdist`.
 
 ## Version
 
