@@ -20,6 +20,21 @@ from pyssp_sysml_definitions import core_definitions, interop_definitions
 architecture = load(model, core_definitions())
 ```
 
+## Roles
+
+The vocabulary defines the role of every fact a model declares, and the carrier
+decides which: build metadata, initialization configuration, or runtime signal.
+The contract — the roles, their carriers, the reserved `parameters` usage name,
+and each marker's fields — is stated once, in `core.sysml`, next to the markers
+it governs. Consuming libraries implement recognition and document how a role
+lands in their artifacts; they reference `core.sysml` instead of restating it.
+
+`interop.sysml` is the worked example: `InteropDeployment` is initialization
+configuration bound before initialization and never a wire field.
+
+The long-form rationale, a full model example, and the anti-patterns are in
+[`docs/roles.md`](docs/roles.md).
+
 ## API
 
 - `CORE_FILE` / `INTEROP_FILE` — the package-data file names;

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Documented the three-role contract — build metadata, initialization
+  configuration, runtime signal — as a short statement in `core.sysml` and a
+  long-form `docs/roles.md` with rationale, a worked example, and anti-patterns;
+  consuming libraries cite them instead of restating them.
+
 ### Removed
 
 - `load_with_interop`: export selection is composition policy, so it moved to

@@ -1,6 +1,23 @@
 package PysspCore {
   
-  // Shared base for containers that name an external artifact.
+  // Role contract.  Every fact a model declares has exactly one of three
+  // roles, and its carrier decides which:
+  //
+  //   build metadata    a typed attribute container (FmuMetadata,
+  //                     SspMetadata, DefaultExperiment/Experiment).
+  //                     Build-time configuration; never a connector and
+  //                     never a wire field.
+  //   initialization    a parameter interface (port def :> ParameterInterface,
+  //                     used as `in port parameters : <PortDef>`) or a
+  //                     parameter set (attribute def :> ParameterSet plus
+  //                     `bind`).  Applied before initialization.
+  //   runtime signal    every other port.  Propagates as an input or output.
+  //
+  // A parameter interface must use the reserved usage name `parameters`.
+  // Rationale, examples, and anti-patterns: docs/roles.md.
+
+  // Build-metadata role: shared base for containers that name an external
+  // artifact.
   attribute def SourcedMetadata {
     attribute source : String;
   }
@@ -12,6 +29,9 @@ package PysspCore {
   attribute def SspMetadata :> SourcedMetadata;
   
   part def Analysis;
+
+  // Initialization role: the interface is a port def, the set is an attribute
+  // def.  Neither is a runtime signal.
   port def ParameterInterface;
   attribute def ParameterSet;
   
@@ -22,7 +42,8 @@ package PysspCore {
     attribute fmu_meta : FmuMetadata;
   }
 
-  // ssd:DefaultExperiment (SSP 2.0.1): only startTime and stopTime.
+  // Build-metadata role: experiment containers.  ssd:DefaultExperiment
+  // (SSP 2.0.1) carries only startTime and stopTime.
   attribute def DefaultExperiment {
     attribute startTime : Real;
     attribute stopTime : Real;

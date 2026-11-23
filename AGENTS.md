@@ -21,8 +21,9 @@ dependencies; a consumer supplies its own loader.
   in the consuming layer (for FMI, `pyfmi_sysml`), not here.
 - The version lives in `src/pyssp_sysml_definitions/__init__.py` only;
   `pyproject.toml` is dynamic.
-- `README.md` and `CHANGELOG.md` are the public record; the packaged `.sysml`
-  files are the vocabulary itself.
+- `README.md` is the landing page, `docs/roles.md` the long-form role contract
+  with rationale and examples, and the packaged `.sysml` files the vocabulary
+  itself; `CHANGELOG.md` records releases.
 
 ## Hard constraints
 
@@ -36,6 +37,10 @@ dependencies; a consumer supplies its own loader.
   a zipped install is refused rather than handing a non-path to a loader.
 - **Package data stays declared.** `pyproject.toml` and `MANIFEST.in` list the
   `.sysml` files so the wheel and sdist both carry them.
+- **One statement per fact.** The vocabulary states roles, carriers, and
+  reserved names once: short in `core.sysml`, long in `docs/roles.md`.
+  Consuming repositories reference them and state only their own artifact
+  landing.
 
 ## Workspace rule
 
