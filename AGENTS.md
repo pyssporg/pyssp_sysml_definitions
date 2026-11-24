@@ -44,8 +44,8 @@ dependencies; a consumer supplies its own loader.
 
 ## Workspace rule
 
-The workspace is this checkout. Sibling repositories — `pycps_sysml2`,
-`pyssp_sysml2`, `pyfmi_interfaces`, `pyfmi_interop`, `pyfmi_sysml`,
+The workspace is this checkout. Sibling repositories — `pycps_sysml`,
+`pyssp_sysml`, `pyfmi_interfaces`, `pyfmi_interop`, `pyfmi_sysml`,
 `pysos_sysml`, and the `pyssp_workflow` consumer — are read-only unless the
 task explicitly names one. Never scan outside this checkout to infer a
 contract, and never treat an installed copy as more authoritative than the

@@ -47,7 +47,7 @@ Recognition is by type:
 
 A name convention ("anything ending in `Metadata`") drifts silently, because a
 typo is still a valid name. A supertype is checkable, and the drift test in
-`pycps_sysml2/tests/test_definition_markers.py` keeps the vocabulary and the
+`pycps_sysml/tests/test_definition_markers.py` keeps the vocabulary and the
 code constants in step.
 
 ## The reserved interface name
@@ -140,6 +140,6 @@ XML. Each artifact family states that once for its own format and references
 this contract:
 
 - short contract: `src/pyssp_sysml_definitions/core.sysml`;
-- recognition and validation: `pycps_sysml2` (`docs/breakdown/02-architecture/dialect.md`);
-- SSP-family landing: `pyssp_sysml2` (`docs/building-on-pyssp-sysml2.md`);
+- recognition and validation: `pycps_sysml` (`docs/breakdown/02-architecture/dialect.md`);
+- SSP-family landing: `pyssp_sysml` (`docs/building-on-pyssp-sysml.md`);
 - FMI landing: `pyfmi_sysml` and `pyfmi_interfaces`.
